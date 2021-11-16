@@ -1,0 +1,39 @@
+{
+  "name": "Projecto-Sequelize",
+  "version": "1.0.0",
+  "description": "Projeto de estudo do ORM SEQUELIZE",
+  "main": "server.js",
+  "scripts": {
+    "test": "cross-env NODE_ENV=test jest",
+    "start": "nodemon src/server"
+  },
+  "keywords": [
+    "nodejs project",
+    "api node",
+    "sequelize project",
+    "back-end nodejs"
+  ],
+  "author": "Eufrasio Quixindo",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "celebrate": "^15.0.0",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
+    "express-errors": "^0.3.1",
+    "helmet": "^4.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "multer": "^1.4.3",
+    "pg": "^8.7.1",
+    "reflect-metadata": "^0.1.13",
+    "sequelize": "^6.9.0"
+  },
+  "devDependencies": {
+    "jest": "^27.3.1",
+    "nodemon": "^2.0.14",
+    "sequelize-cli": "^6.3.0"
+  }
+}
