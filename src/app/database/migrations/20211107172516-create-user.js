@@ -18,17 +18,35 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
+      phone: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
       image: {
         type: Sequelize.STRING,
         allowNull: true
+      },
+      province: {
+        type: Sequelize.STRING,
+        allowNull: false
       },
       password: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      token: {
+      token:{
         type: Sequelize.STRING,
         allowNull: true
+      },
+      active: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: true,
+        allowNull: false
+      },
+      is_admin: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
       },
       created_at: {
         type: Sequelize.DATE,
@@ -39,7 +57,6 @@ module.exports = {
         allowNull: false
       }
     });
-
   },
 
   down: async (queryInterface, Sequelize) => {

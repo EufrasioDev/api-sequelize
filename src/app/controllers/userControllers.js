@@ -1,13 +1,13 @@
-const Users = require("../models/User");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const auth = require("../../config/auth");
+const Users = require("../models/User");
 
 /**
- * Read - findAll
- * Delete - Destroy
- * Create - create
- * Update - const produto = await Produto.findByPk(1);
+ * Read - findAll -> Retorna um array de objetos com os dados do banco;
+ * Read - findOne -> Retorna um objeto com os dados do banco;
+ * Delete - Destroy -> Deleta um registro no banco de dados;
+ * Create - create -> Insere um registro no banco de dados;
+ * Update - save -> Salva o dado que foi alterado no banco de dados.
+ * Ex: const produto = await Produto.findByPk(1);
             //console.log(produto);
             produto.nome = "Mouse Top";
             const resultadoSave = await produto.save();
@@ -15,36 +15,35 @@ const auth = require("../../config/auth");
  */
 
 module.exports = {
-  async index(req, res){
-    const response = await Users.findAll();
-    console.log("Listando os users do banco de dados...");
+  
+  async MyInfo(req, res){
+    const {id} = req.params;
+    const response = await Users.findOne({where: {id, active:true}});
+    if(!response) throw new Error("Usuario não encontrado.");
     return res.json(response);
   },
 
   async save(req, res){
-    const {name, email, image, password} = req.body;
+    const {name, email, phone, province, password} = req.body;
+
     const saltRounds = 12;
-    const userAlredyExists = await Users.findOne({where:{"email": email}});
-    if (userAlredyExists) {
-      throw new Error("O email inserido ja foi cadastrado.");
-    }
+    const userAlredyExists = await Users.findOne({where:{email}});
+    console.log(userAlredyExists);
+
+    if (userAlredyExists) throw new Error("O email inserido ja foi cadastrado.");
+
     const salt = await bcrypt.genSalt(saltRounds);
+    //Passhash retorna o hash da password do usuario
     const passHash = await bcrypt.hash(password, salt);
-    const token = jwt.sign(
-      {name: name, email: email}, 
-      auth.secret, 
-      {expiresIn: auth.expireIn}
-    )
     const response = await Users.create({
       name,
       email,
-      image,
+      phone,
+      province,
       password: passHash,
-      token: token
     });
-    if(!response){
-      throw new Error("Problemas ao cadastrar");
-    }
+    if(!response) throw new Error("Problemas ao cadastrar");
+    console.log(response);
     return res.status(201).json({
       message: "Usuario cadastrado com sucesso"
     });
@@ -53,23 +52,22 @@ module.exports = {
   async update(req, res){
     const {id} = req.header;
     const response = Users.findByPk(id);
-    console.log(user.name+" Atualizado no banco de dados");
+    console.log(" Atualizado no banco de dados");
     return res.json({message: "Atualizando", content: response});
   },
 
   async delete(req, res){
     const {id} = req.params;
     const userId = req.user_id;
-    if (id !== userId) {
-      throw new Error("Operação não autorizada | Usuario tentando deletar outro usuario.");
-    }
+
+    if (id !== userId) throw new Error("Operação não autorizada | Usuario tentando deletar outro usuario.");
+    
     const user = await Users.findByPk(id);
-    if (!user) {
-      throw new Error("Usuario não encontrado para o id informado");
-    }
-    console.log(user.name+" Deletado do banco de dados");
-    await Users.destroy({where: {id : user.id}})
-    return res.json({
+    if (!user) throw new Error("Usuario não encontrado para o id informado");
+    if(user.active == false) throw new Error("Usuario ja deletado");
+    user.active = false;
+    await user.save();
+    return res.status(200).json({
       message: "Usuario deletado",
       content: user
     });

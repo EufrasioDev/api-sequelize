@@ -2,36 +2,25 @@
 
 const {DataTypes} = require("sequelize");
 const connection = require("../database/connection");
+const Reactions = require("./Reactions");
+const Users = require("./User");
 
-const Users = connection.define("Users", {
+const Incidents = connection.define("incidents", {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     allowNull: false,
     primaryKey: true
   },
-  name: {
+  type: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  email: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true
-  },
-  phone: {
-    type: DataTypes.NUMBER,
-    allowNull: false
-  },
-  image: {
+  pet_image: {
     type: DataTypes.STRING,
     allowNull: true
   },
-  province: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  password: {
+  description: {
     type: DataTypes.STRING,
     allowNull: false
   },
@@ -39,12 +28,20 @@ const Users = connection.define("Users", {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
     allowNull: false
-  },
-  is_admin: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-    allowNull: false
   }
 });
 
-module.exports = Users;
+Incidents.belongsTo(Users, {
+  constraint: true,
+  foreignKey: "user_id"
+});
+
+Incidents.belongsToMany(Users, {
+  through: {
+    model: Reactions
+  },
+  constraint: true,
+  foreignKey: "incident_id"
+});
+
+module.exports = Incidents;

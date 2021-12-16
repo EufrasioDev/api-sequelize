@@ -13,7 +13,9 @@ module.exports = {
     [Segments.BODY]: Joi.object().keys({
       name: Joi.string().required(),
       email: Joi.string().email().required(),
-      image: Joi.string().empty(),
+      image: Joi.string(),
+      phone: Joi.number(),
+      province: Joi.string(),
       password: Joi.string().required(),
     })
   }),

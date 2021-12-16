@@ -23,7 +23,7 @@ module.exports = {
       "underscoredAll": true
     }
   },
-  "production": {
+  "prod": {
     "username": "postgres",
     "password": "12345",
     "database": "node-sequelize-do-zero-pro",
